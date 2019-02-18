@@ -1,0 +1,22 @@
+const http = require('http');
+
+const PORT = 8080;
+const server = http.createServer(requestHandler);
+
+function requestHandler(request, response) {
+    const product = {
+        id: 1,
+        name: 'Supreme T-Shirt',
+        brand: 'Supreme',
+        price: 99.99,
+        options: [
+            { color: 'blue' },
+            { size: 'XL' }
+        ]
+    };
+
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify(product));
+}
+
+server.listen(PORT, () => console.log(`listening on port ${PORT}`));
