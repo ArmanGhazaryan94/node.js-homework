@@ -17,6 +17,7 @@ app.use(passport.initialize());
 require('./passport/strategies/facebook');
 require('./passport/strategies/twitter');
 require('./passport/strategies/google');
+require('./database/connection');
 
 app.use('/api/users', verifyToken, users);
 app.use('/api/products', verifyToken, products);
