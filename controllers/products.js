@@ -1,45 +1,54 @@
+import Sequelize from 'sequelize';
 import products from './products.json';
+import ProductModel from '../models/Product';
+import sequelize from '../database/connection';
+
+const Product = ProductModel(sequelize, Sequelize);
 
 exports.getAllProducts = (req, res) => {
-    res.json(products);
+    Product
+        .findAll()
+        .then(data => res.json(data))
+        .catch(error => res.send(error));
 };
 
 exports.getProductByID = (req, res) => {
     const ID = parseInt(req.params.id);
-    const product = products.find(el => el.id === ID);
-    if(product){
-        res.json(product);
-    } else {
-        res
-            .status(404)
-            .json({
-                code: 404,
-                message: 'Not found'
-            })
-    }
+    Product.findById(ID)
+        .then(data => data
+            ? res.json(data)
+            : res
+                .status(404)
+                .json({
+                    code: 404,
+                    message: 'Not found'
+                })
+        )
+        .catch(error => res.send(error))
 };
 
 exports.getProductReviews = (req, res) => {
     const ID = parseInt(req.params.id);
-    const product = products.find(el => el.id === ID);
-    if(product){
-        const reviews = [ product.title, product.body ];
-        res.json({ reviews });
-    } else {
-        res
-            .status(404)
-            .json({
-                code: 404,
-                message: 'Not found'
-            })
-    }
+    Product.findById(ID)
+        .then(data => data
+            ? res.json([ data.title, data.body ])
+            : res
+                .status(404)
+                .json({
+                    code: 404,
+                    message: 'Not found'
+                })
+        )
+        .catch(error => res.send(error))
 };
 
 exports.createProduct = (req, res) => {
+    const { title, body } = req.body;
     const newProduct = {
-        ...req.body,
-        id: products[products.length - 1].id + 1,
+        title,
+        body
     };
-    products.push(newProduct);
-    res.json(newProduct);
+    Product.create(newProduct)
+        .then(data => res.json(data))
+        .catch(error => res.send(error));
 };
