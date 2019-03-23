@@ -1,3 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/my_database');
+const db = mongoose.connect('mongodb://localhost:27017/homework');
+
+db.then(() => console.log('connected dbbb'));
+

@@ -1,18 +1,13 @@
-import Sequelize from 'sequelize';
-import products from './products.json';
-import ProductModel from '../models/Product';
-import sequelize from '../database/connection';
+import Product from '../models/ProductSchema';
 
-const Product = ProductModel(sequelize, Sequelize);
-
-exports.getAllProducts = (req, res) => {
+const getAllProducts = (req, res) => {
     Product
-        .findAll()
+        .find()
         .then(data => res.json(data))
         .catch(error => res.send(error));
 };
 
-exports.getProductByID = (req, res) => {
+const getProductByID = (req, res) => {
     const ID = parseInt(req.params.id);
     Product.findById(ID)
         .then(data => data
@@ -27,7 +22,7 @@ exports.getProductByID = (req, res) => {
         .catch(error => res.send(error))
 };
 
-exports.getProductReviews = (req, res) => {
+const getProductReviews = (req, res) => {
     const ID = parseInt(req.params.id);
     Product.findById(ID)
         .then(data => data
@@ -42,13 +37,38 @@ exports.getProductReviews = (req, res) => {
         .catch(error => res.send(error))
 };
 
-exports.createProduct = (req, res) => {
+const deleteProduct = (req, res) => {
+    const ID = parseInt(req.params.id);
+    Product.findByIdAndDelete(ID)
+        .then(data => data
+            ? res.json([ data.title, data.body ])
+            : res
+                .status(404)
+                .json({
+                    code: 404,
+                    message: 'Not found'
+                })
+        )
+        .catch(error => res.send(error))
+};
+
+const createProduct = (req, res) => {
     const { title, body } = req.body;
     const newProduct = {
         title,
         body
     };
-    Product.create(newProduct)
+    const product = new Product(newProduct);
+    product
+        .save()
         .then(data => res.json(data))
-        .catch(error => res.send(error));
+        .catch(err => res.send(err))
 };
+
+export {
+    createProduct,
+    getProductReviews,
+    getProductByID,
+    getAllProducts,
+    deleteProduct
+}
