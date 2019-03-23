@@ -1,5 +1,26 @@
-import users from './users.json';
+import User from '../models/UserSchema';
 
-exports.getAllUsers = (req, res) => {
-    res.json(users);
+export const getAllUsers = (req, res) => {
+    User
+        .find()
+        .then(data => res.json(data))
+        .catch(err => res.send(err));
+};
+
+export const deleteUser = (req, res) => {
+    const id = req.params.id;
+
+    User
+        .findByIdAndDelete(id)
+        .then(data => {
+            if (!data) {
+                return res.json({
+                    code: 404,
+                    message: 'User not found'
+                });
+            }
+
+            res.json(data);
+        })
+        .catch(err => res.send(err));
 };
