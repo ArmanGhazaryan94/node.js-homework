@@ -7,10 +7,14 @@ import bodyParser from 'body-parser';
 import cookieParser from './middlewares/cookieParser';
 import verifyToken from './middlewares/auth';
 import passport from 'passport';
-import db from './mongo-db/connection';
+import db from './mongo-db/connection'
+import cors from "cors";
+import swaggerUi from 'swagger-ui-express';
+// import swaggerDoc from './api/swagger/swagger.json';
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cookieParser);
@@ -21,6 +25,7 @@ require('./passport/strategies/twitter');
 require('./passport/strategies/google');
 require('./database/connection');
 
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 app.use('/api/users', verifyToken, users);
 app.use('/api/products', verifyToken, products);
 app.use('/api/auth', auth);

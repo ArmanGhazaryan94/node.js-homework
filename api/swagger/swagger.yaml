@@ -1,0 +1,242 @@
+swagger: '2.0'
+info:
+  description: |
+    This is a sample API
+  version: 1.0.0
+  title: Node.js homework app
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: arman_ghazaryan@epam.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: localhost:9000
+basePath: /api
+securityDefinitions:
+  JWT:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: Bearer authorization
+tags:
+  - name: users
+    description: Operations for users
+  - name: auth
+    description: Operations for authentication
+  - name: products
+    description: Operations for products
+  - name: cities
+    description: Operations for cities
+paths:
+  /auth:
+    post:
+      tags: 
+        - auth
+      summary: Login
+      description: Login
+      operationId: auth
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          description: userName password
+          required: true
+          schema:
+            $ref: '#/definitions/Credentials'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Auth'
+  /users:
+    get:
+      tags:
+        - users
+      security: 
+        - JWT: []
+      summary: Get all users list
+      description: Get all users list
+      operationId: getAllUsers
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+  /users/{userId}:
+    get:
+      security:
+        - JWT: []
+      tags:
+       - users
+      summary: Get user
+      description: Get user by id
+      operationId: GetUserById
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          description: User id
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+        404:
+          description: Not found
+    delete:
+      tags:
+       - users
+      security:
+        - JWT: []
+      summary: Delete user
+      description: Delete user
+      operationId: DeleteUserById
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          description: User id
+          required: true
+          type: string
+      responses: 
+        200:
+          description: OK
+        404:
+          description: Not found
+  /cities:
+    get:
+      tags:
+        - cities
+      security: 
+        - JWT: []
+      summary: Get all cities list
+      description: Get all cities list
+      operationId: getAllCities
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/City'
+    post:
+      tags: 
+        - cities
+      summary: Create a new city
+      description: Create a new city
+      operationId: CreateCity
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          description: new city
+          required: true
+          schema:
+            $ref: '#/definitions/City'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/City'
+    put:
+      tags: 
+        - cities
+      summary: Update city
+      description: Update city
+      operationId: UpdateCity
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          description: update city
+          required: true
+          schema:
+            $ref: '#/definitions/City'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/City'
+        404:
+          description: Not Found
+  /cities/{cityId}:
+    delete:
+      tags:
+       - cities
+      security:
+        - JWT: []
+      summary: Delete city
+      description: Delete city
+      operationId: DeleteCityById
+      produces:
+        - application/json
+      parameters:
+        - name: cityId
+          in: path
+          description: City id
+          required: true
+          type: string
+      responses: 
+        200:
+          description: OK
+        404:
+          description: Not found
+definitions:
+  Auth:
+    type: object
+    properties:
+      code:
+        type: integer
+        example: 200
+      message:
+        type: string
+        example: OK
+      token:
+        type: string
+  Credentials:
+    type: object
+    properties:
+      email: 
+        type: string
+      password: 
+        type: string
+  User:
+    type: object
+    properties:
+      id: 
+        type: string
+        example: 5c84f2ce81a9b6cc0d02490f
+      firstName: 
+        type: string
+        example: John
+      lastName: 
+        type: string
+        example: Doe
+      email: 
+        type: string
+        example: user@mail.com
+  City: 
+    type: object
+    properties:
+      name: 
+        type: string
+      country: 
+        type: string
+      capital: 
+        type: boolean
+      location: 
+        type: object
+ 
